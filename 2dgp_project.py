@@ -2,6 +2,8 @@ from pico2d import *
 
 import game_world
 from background import BackGround
+from other_car import Other_Car
+
 
 def handle_event():
     global running
@@ -17,9 +19,12 @@ def handle_event():
 def create_world():
     global running
     global background
+    global other_car
 
     running = True
 
+    other_car = Other_Car()
+    game_world.add_object(other_car, 1)
     background = BackGround()
     game_world.add_object(background, 0)
     pass
