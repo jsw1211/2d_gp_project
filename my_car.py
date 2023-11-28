@@ -1,6 +1,7 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
 
-from pico2d import get_time, load_image, load_font, clamp,  SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT
+from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
+    draw_rectangle
 import game_world
 import game_framework
 
@@ -150,3 +151,10 @@ class My_Car:
 
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.get_bb())
+
+    def get_bb(self):
+        return self.x - 40, self.y - 50, self.x + 40, self.y + 50
+
+    def handle_collision(self, group,other):
+        pass

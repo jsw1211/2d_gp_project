@@ -75,4 +75,8 @@ class Other_Car:
         if self.y < 25:
             game_world.remove_object(self)
 
-    
+    def get_bb(self):
+        return self.x - 40, self.y - 40, self.x + 40, self.y + 40
+
+    def handle_collision(self, group, other):
+        pass
