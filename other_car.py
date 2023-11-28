@@ -18,7 +18,7 @@ other_car_image_y = 555 / 8
 
 class Run:
     @staticmethod
-    def enter(bird, e):
+    def enter(other_car, e):
         pass
 
     @staticmethod
@@ -54,8 +54,10 @@ class StateMachine:
 class Other_Car:
     image = None
 
-    def __init__(self):
-        self.x, self.y = random.randint(230, 610), 800
+    def __init__(self, velocity = 1):
+        self.x_pos = [230, 350, 485, 615]
+        self.x, self.y = random.choice(self.x_pos), 800
+        self.velocity = velocity
         self.frame = random.randint(0, 5)
         self.action = 3
         self.face_dir = 1
@@ -65,5 +67,12 @@ class Other_Car:
         self.state_machine.start()
     def draw(self):
         self.state_machine.draw()
+        draw_rectangle(*self.get_bb())
+
     def update(self):
         self.state_machine.update()
+        self.y -=self.velocity
+        if self.y < 25:
+            game_world.remove_object(self)
+
+    
