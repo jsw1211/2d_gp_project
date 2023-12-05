@@ -1,4 +1,5 @@
 # 이것은 각 상태들을 객체로 구현한 것임.
+import math
 
 from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
     draw_rectangle
@@ -40,22 +41,10 @@ FRAMES_PER_ACTION = 8
 
 
 
-
-
-
-
-
-
 class Idle:
 
     @staticmethod
     def enter(my_car, e):
-        if my_car.face_dir == -1:
-            my_car.action = 2
-        elif my_car.face_dir == 1:
-            my_car.action = 3
-        my_car.dir = 0
-        my_car.frame = 0
         pass
 
     @staticmethod
@@ -77,10 +66,26 @@ class Run:
 
     @staticmethod
     def enter(my_car, e):
-        if right_down(e) or left_up(e): # 오른쪽으로 RUN
-            my_car.dir, my_car.action, my_car.face_dir = 1, 1, 1
-        elif left_down(e) or right_up(e): # 왼쪽으로 RUN
-            my_car.dir, my_car.action, my_car.face_dir = -1, 0, -1
+        if my_car.x == 230:
+            if right_down(e) or left_up(e): # 오른쪽으로 RUN
+                my_car.x, my_car.action, my_car.face_dir = my_car.x + 120, 1, 1
+            elif left_down(e) or right_up(e): # 왼쪽으로 RUN
+                my_car.action, my_car.face_dir = 0, -1
+        elif my_car.x == 350:
+            if right_down(e) or left_up(e): # 오른쪽으로 RUN
+                my_car.x, my_car.action, my_car.face_dir = my_car.x + 135, 1, 1
+            elif left_down(e) or right_up(e): # 왼쪽으로 RUN
+                my_car.x, my_car.action, my_car.face_dir = my_car.x - 120, 0, -1
+        elif my_car.x == 485:
+            if right_down(e) or left_up(e): # 오른쪽으로 RUN
+                my_car.x, my_car.action, my_car.face_dir = my_car.x + 130, 1, 1
+            elif left_down(e) or right_up(e): # 왼쪽으로 RUN
+                my_car.x, my_car.action, my_car.face_dir = my_car.x - 135, 0, -1
+        elif my_car.x == 615:
+            if right_down(e) or left_up(e): # 오른쪽으로 RUN
+                my_car.action, my_car.face_dir = 1, 1
+            elif left_down(e) or right_up(e): # 왼쪽으로 RUN
+                my_car.x, my_car.action, my_car.face_dir = my_car.x - 130, 0, -1
 
     @staticmethod
     def exit(my_car, e):
@@ -90,7 +95,8 @@ class Run:
     def do(my_car):
         my_car.frame = (my_car.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
         my_car.x += my_car.dir * RUN_SPEED_PPS * game_framework.frame_time
-        my_car.x = clamp(25, my_car.x, 1600 - 25)
+        my_car.x = clamp(210, my_car.x, 625)
+        my_car.image.rotate_draw(40, my_car.x, my_car.y, 100, 100)
 
 
     @staticmethod
@@ -132,10 +138,11 @@ class StateMachine:
 
 
 class My_Car:
+    life = 3
+
     def __init__(self):
         self.x, self.y = 350, 90
         self.frame = 0
-        self.action = 3
         self.face_dir = 1
         self.dir = 0
         self.image = load_image('car.png')
@@ -156,5 +163,8 @@ class My_Car:
     def get_bb(self):
         return self.x - 40, self.y - 50, self.x + 40, self.y + 50
 
-    def handle_collision(self, group,other):
-        pass
+    def handle_collision(self, group, other):
+        if group == 'my_car:other_car':
+            self.life -= 1
+            if self.life < 1:
+                game_framework.quit()

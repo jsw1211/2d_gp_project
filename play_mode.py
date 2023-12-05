@@ -20,20 +20,26 @@ def handle_events():
             my_car.handle_event(event)
 
 def init():
-    global other_car
+    global other_cars
     global background
     global my_car
 
     running = True
 
-    other_car = Other_Car()
-    game_world.add_object(other_car, 1)
+    other_cars = [Other_Car(i*200) for i in range(3000)]
+    game_world.add_objects(other_cars, 1)
 
     background = BackGround()
     game_world.add_object(background, 0)
 
     my_car = My_Car()
     game_world.add_object(my_car, 1)
+
+    game_world.add_collision_pair('my_car:other_car', my_car, None)
+
+    for other_car in other_cars:
+        game_world.add_collision_pair('my_car:other_car', None, other_car)
+
 
 
 
@@ -46,6 +52,7 @@ def finish():
 
 def update():
     game_world.update()
+    game_world.handle_collision()
     # delay(0.5)
 
 
