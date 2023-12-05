@@ -8,6 +8,9 @@ objects = [[], []]
 def add_object(o, depth=0):
     objects[depth].append(o)
 
+def add_objects(ol, depth = 0):
+    objects[depth] += ol
+
 # 월드를 업데이트하는, 객체들을 모두 업데이트 하는 함수
 def update():
     for layer in objects:
