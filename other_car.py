@@ -10,13 +10,11 @@ other_car_image_y = 555 / 8
 class Other_Car:
     image = None
 
-    def __init__(self, y, velocity = 5):
+    def __init__(self , y):
         self.x_pos = [230, 350, 485, 615]
-        self.x, self.y = random.choice(self.x_pos), y
-        self.velocity = velocity
-        self.action = 3
-        self.face_dir = 1
-        self.dir = 1
+        self.x, self.y = random.choice(self.x_pos), random.randint(600, 10000)
+        self.velocity = 5
+
         if Other_Car.image == None:
             Other_Car.image = load_image('car.png')
 
@@ -26,9 +24,10 @@ class Other_Car:
 
     def update(self):
         self.velocity += 0.001
-        self.y -=self.velocity
+        self.y -= self.velocity
         if self.y < 100:
-            game_world.remove_object(self)
+            self.x = random.choice(self.x_pos)
+            self.y = random.randint(900, 1500)
 
     def get_bb(self):
         return self.x - 40, self.y - 40, self.x + 40, self.y + 40
@@ -36,4 +35,3 @@ class Other_Car:
     def handle_collision(self, group, other):
         if group == 'my_car:other_car':
             game_world.remove_object(self)
-        pass
