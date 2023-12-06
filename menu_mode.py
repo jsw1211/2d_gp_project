@@ -19,8 +19,6 @@ from background import BackGround
 def init():
     global menu
     menu = load_image('main.png')
-    hide_cursor()
-    hide_lattice()
 
 def finish():
     global menu
@@ -56,11 +54,6 @@ def create_new_world():
     # fill here
 
 
-def load_saved_world():
-    game_world.load()
-    pass
-
-
 def handle_events():
     events = get_events()
     for event in events:
@@ -71,16 +64,13 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_SPACE:
             create_new_world()
             game_framework.change_mode(play_mode)
-        elif event.type == SDL_KEYDOWN and event.key == SDLK_l:
-            load_saved_world()
-            game_framework.change_mode(play_mode)
 
 def update():
     pass
 
 def draw():
     clear_canvas()
-    menu.draw(get_canvas_width()//2, get_canvas_height()//2)
+    menu.draw(get_canvas_width()//2, get_canvas_height()//2, 840, 650)
     update_canvas()
 
 
