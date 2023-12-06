@@ -12,7 +12,7 @@ class Other_Car:
 
     def __init__(self , y):
         self.x_pos = [230, 350, 485, 615]
-        self.x, self.y = random.choice(self.x_pos), random.randint(600, 10000)
+        self.x, self.y = random.choice(self.x_pos), random.randint(900, 1500)
         self.velocity = 5
 
         if Other_Car.image == None:
@@ -25,9 +25,9 @@ class Other_Car:
     def update(self):
         self.velocity += 0.001
         self.y -= self.velocity
-        if self.y < 100:
+        if self.y < -10:
             self.x = random.choice(self.x_pos)
-            self.y = random.randint(900, 1500)
+            self.y = 900
 
     def get_bb(self):
         return self.x - 40, self.y - 40, self.x + 40, self.y + 40
