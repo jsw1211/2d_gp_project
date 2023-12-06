@@ -27,7 +27,7 @@ def init():
 
     running = True
 
-    other_cars = [Other_Car(i * 200) for i in range(10)]
+    other_cars = [Other_Car(i) for i in range(5)]
     game_world.add_objects(other_cars, 1)
 
     background = BackGround()
