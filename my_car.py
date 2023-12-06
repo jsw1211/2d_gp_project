@@ -2,9 +2,14 @@
 import math
 
 from pico2d import get_time, load_image, load_font, clamp, SDL_KEYDOWN, SDL_KEYUP, SDLK_SPACE, SDLK_LEFT, SDLK_RIGHT, \
-    draw_rectangle
+    draw_rectangle, load_wav
+
+import game_over
 import game_world
 import game_framework
+import menu_mode
+import server
+
 
 # state event check
 # ( state event type, event value )
@@ -53,12 +58,16 @@ class Idle:
 
     @staticmethod
     def do(my_car):
+        if my_car.end:
+            server.background.end = True
+            game_framework.change_mode(game_over)
         pass
 
 
     @staticmethod
     def draw(my_car):
         my_car.image.clip_draw(385, 500, 80, 70, my_car.x, my_car.y, 100, 100)
+        my_car.draw_life()
 
 
 
@@ -86,6 +95,7 @@ class Run:
                 my_car.action, my_car.face_dir = 1, 1
             elif left_down(e) or right_up(e): # 왼쪽으로 RUN
                 my_car.x, my_car.action, my_car.face_dir = my_car.x - 130, 0, -1
+        my_car.sound_brake.play()
 
     @staticmethod
     def exit(my_car, e):
@@ -93,15 +103,15 @@ class Run:
 
     @staticmethod
     def do(my_car):
-        my_car.frame = (my_car.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
-        my_car.x += my_car.dir * RUN_SPEED_PPS * game_framework.frame_time
         my_car.x = clamp(210, my_car.x, 625)
-        my_car.image.rotate_draw(40, my_car.x, my_car.y, 100, 100)
-
+        if my_car.end:
+            game_framework.change_mode(game_over)
+            server.background.end = True
 
     @staticmethod
     def draw(my_car):
         my_car.image.clip_draw(385, 500, 80, 70, my_car.x, my_car.y, 100, 100)
+        my_car.draw_life()
 
 
 
@@ -148,6 +158,12 @@ class My_Car:
         self.image = load_image('car.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
+        self.life_image = load_image('life.png')
+        self.end = False
+        self.sound_crash = load_wav('sound\\car_crash.mp3')
+        self.sound_crash.set_volume(32)
+        self.sound_brake = load_wav('sound\\brake.mp3')
+        self.sound_brake.set_volume(32)
 
 
     def update(self):
@@ -166,5 +182,10 @@ class My_Car:
     def handle_collision(self, group, other):
         if group == 'my_car:other_car':
             self.life -= 1
+            self.sound_crash.play()
             if self.life < 1:
-                game_framework.quit()
+                self.end = True
+
+    def draw_life(self):
+        for i in range(self.life):
+            self.life_image.draw(50 + i * 70, 600, 50, 50)
